@@ -1,0 +1,16 @@
+libmigdb/doc/*.frt
+libmigdb/doc/*.html
+libmigdb/examples/Makefile
+libmigdb/examples/*.c*
+libmigdb/examples/cmds.txt
+libmigdb/src/Makefile
+libmigdb/src/*.c*
+libmigdb/src/*.h
+libmigdb/files
+libmigdb/DJGPP.why
+libmigdb/GPL-license
+libmigdb/Makefile
+libmigdb/README
+libmigdb/compress.sh
+libmigdb/version.c
+libmigdb/change.log

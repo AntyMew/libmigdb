@@ -1,0 +1,124 @@
+Introduction:
+------------
+
+This library is an attempt to support the GDB/MI interface. MI stands for
+machine interface. In this mode gdb sends responses that are "machine
+readable" instead of "human readable"
+
+Objetive:
+--------
+
+To implement a C and C++ interface to talk with gdb using it.
+
+Advantages:
+----------
+
+* The responses should be i18n independent and with less problems to be parsed.
+* New versions shouldn't break the parser.
+
+Disadvantages:
+-------------
+
+* The responses are quite complex.
+* The responses can't be easily read by a human.
+
+Motivation:
+----------
+
+To add remote debugging to SETEdit. RHIDE lacks it.
+
+Currently supported platcforms:
+------------------------------
+
+Currently we support:
+
+* Linux console
+* Linux X11
+
+The code should be usable by other systems that provides POSIX API and where
+gdb is available.
+
+How to compile and install:
+--------------------------
+
+Change to the "src" directory and run "make". Change to root and run "make
+install".
+The "Makefile" could need changes. The PREFIX is /usr you most probably will
+want to change it to /usr/local.
+
+How to run examples:
+-------------------
+
+Switch to the "examples" directory and run "make". Read the comments at the
+beggining of the examples.
+They show how to use the library for different targets.
+
+* linux_test: Linux console. Shows how to set breakpoints and watchpoints.
+* remote_test: Remote debugging using TCP/IP connection. Shows breakpoints.
+* x11_cpp_test: Shows how to use the C++ wrapper. The examples is for X11.
+* x11_fr_test: Linux X11. Shows how to use "frames" and "variable objects".
+* x11_test: Linux X11. Shows how to set breakpoints and watchpoints.
+* x11_wp_test: Linux X11. Shows how to set watchpoints.
+
+Function reference and help:
+---------------------------
+
+An incomplete reference can be found in the "doc" directory. I suggest
+looking at the examples with the reference at hand.
+
+
+Author:
+------
+
+Salvador E. Tropea
+Email: user: set, server: users.sf.net
+
+     Telephone: (+5411) 4759-0013
+     Postal Address:
+     Salvador E. Tropea
+     Curapaligue 2124
+     (1678) Caseros - 3 de Febrero
+     Prov: Buenos Aires
+     Argentina
+
+-----------------------------------------------------------------------------
+
+Random notes:
+------------
+
+Debug strategies:
+
+1) Remote using TCP/IP: This methode is quite limited. One amazing thing I
+noticed is that you can't set watchpoints. Other important differences are
+that the remote target starts "running", it means you have to use continue
+instead of run and it also means that command line arguments must be provided
+at the remote end.
+The way that's implemented you need a full gdb on the local end. That's ok
+when you want to release the remote end from some of the heavy tasks (like
+loading all the debug info), but doesn't help if what you want is just
+control gdb from a remote machine sending the commands throu TCP/IP. The last
+could allow debugging DOS applications under Windows exploting the Windows
+multitasking.
+
+2) Local under X: We start an xterm child that runs:
+
+<--- /tmp/xxxxxx.sh
+tty > /tmp/yyyyyy
+sleep 100d
+<---
+
+That's "xterm -e /bin/sh /tmp/xxxxxx.sh &"
+Then we read /tmp/yyyyyy file to know the ttyname, delete both files and
+tell gdb to use this terminal.
+This is implemented by: gmi_start_xterm()
+
+3) Local for Linux console: We can open a new terminal (as X and Allegro
+does with tty8 and higher).
+This is implemented by: gmi_look_for_free_vt()
+
+4) Local for Linux console, same terminal: We tell gdb to use the current
+terminal, but before sending an async command we so Suspend and when we get
+an async response "stopped" we Resume. This is less functional and more
+complex.
+
+

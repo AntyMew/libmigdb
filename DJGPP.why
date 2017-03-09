@@ -1,0 +1,101 @@
+DJGPP Problems and why it isn't currently supported:
+
+ Traditionaly djgpp never used gdb frontends. The reason is not so obvious.
+The main problem is that DOS isn't a multitasking OS. So you can't open a
+pipe to a child a process and multitask. The pipe command exists but you are
+blocked until the child finishes.
+For this reason there is no gdb frontend for djgpp. Instead djgpp users use
+full debuggers with a frontend included. That's the case of RHIDE (in this
+particular case gdb is inside RHIDE).
+ But most people using djgpp uses a multitasking OS, at least for development.
+The most common setup is Windows. Additionally you could use two DOS boxes
+and get real-hardware-multitask ;-)
+ The two possible setups are:
+
+1) Windows (win32): The frontend communicates with gdb using some IPC
+mechanism. The frontend uses the "start" (or similar) command to call gdb and
+then sends/receives the commands/responses using the IPC mechanism.
+Here Windows does the multitasking.
+That's completly transparent in most cases because the frontend starts gdb
+indicating which file to debug and the same front end controls gdb (including
+the end of sesssion).
+
+2) Two DOS boxes: The user must run gdb in one of the boxes indicating to
+connect to the other using some networking protocol. On the other side the
+frontend is started and waits for a incoming connection.
+This is a little bit more complicated because:
+a) The user must setup a network.
+b) The user must start things manually.
+
+ But there are some problems that doesn't allow it:
+
+GDB side:
+
+ GDB remote debugging isn't like this. It was designed for remote debug
+using multitasking systems and not things like DOS. When you use the remote
+debugging you run "gdbserver" on the "target" end and "gdb" on the local side
+(host). But then you are again in the same situation, you can't control gdb
+using pipes or similar mechanisms.
+
+ The solution for this is to tell gdb "Hey! use IPC for your command loop".
+But the problem is that gdb is a mess. It have a very nice abstraction for
+I/O implemented like classes (see ui-file.c). So you have gdb_stdout and
+gdb_stdin structures. But not all the code uses it, in fact the "readline"
+part (gdb prompt and input) bypass it.
+
+ To solve this you have to redirect at low level. Something like:
+
+a) Open a socket.
+b) dup2 stdin/stdout
+
+ This is the easy part because you have to avoid this redirection in the
+child or the output of the debuggy will also go throu the IPC channel. But I
+think it isn't that hard because gdb switches the stdout/in attributes when
+running the child process, so I think it is possible to also dup2 to the old
+handles while the child is running.
+
+  In any case all of this means changes in gdb.
+
+
+
+DJGPP side:
+
+ The "open socket and dup2" above mentioned mechanism works for POSIX systems
+like Linux (I tested it and worked, I was able to control gdb using TCP/IP
+sockets). But djgpp isn't POSIX.
+
+ DJGPP have a nice mechanism to for "File System Extensions", but when I
+tried it I found that dup2 doesn't work for extensions. I'm not sure if it
+can be done with some hack or if the last version of djgpp version solves
+this problem.
+
+ It most probably means that djgpp have to be modified. May be I'm wrong.
+
+
+
+IPC what?
+
+ Inter-Process Communication is quite simple on POSIX systems but for djgpp
+... Well, you can use a networking protocol, but again isn't that simple.
+ For TCP/IP you have:
+
+a) libsocket, it looks like it doesn't work very well with VSOCK 2. I tried
+it on Windows 98 SE and it failed.
+b) Watt-32, it needs a special NDIS driver for Windows.
+
+ Another option could be using mslot library. It seems to work (at least for
+Windows). It uses the "Mail Slot" mechanism. One problem I found in this
+library is that it implements the "read" FSEXT in a "non-blocking" way and
+doesn't honor the O_NONBLOCKING flag. The changes to fix it are really
+simple. According to mslot docs they are available for plain DOS.
+
+
+Conclusion:
+
+ It looks like is possible to achieve the above mentioned setups. But changes
+have to be made to gdb, djgpp and existing IPC libraries.
+ The gdb part seems to be the most complex and harder to be introduced in
+main gdb.
+
+
+SET

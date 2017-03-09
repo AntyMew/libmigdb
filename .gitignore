@@ -1,0 +1,11 @@
+*.o
+*.a
+examples/linux_test
+examples/pty_test
+examples/remote_test
+examples/target_frames
+examples/test_target
+examples/x11_cpp_test
+examples/x11_fr_test
+examples/x11_test
+examples/x11_wp_test

@@ -1,0 +1,232 @@
+$Log: change.log,v $
+Revision 1.41  2016/07/11 12:52:23  set
+* Fixed: [examples/* src/*] License clarification (which GPL version,
+requested by RMS)
+* Fixed: [Makefile] Missing clean for version and examples/
+* Added: [examples/Makefile] Missing ticepic clean and back-ups.
+* Added: [src/Makefile] Back-ups removal.
+* Modified: [src/mi_gdb.h] Version to 0.8.13
+.
+Revision 1.40  2010/05/19 19:30:23  set
+* Modified: [connect.c] To ignore \r characters from gdb. Markus Huebenthal
+saw them using gdb 6.8.
+* Modified: [prg_control.c] -readnow vs file name order. Don't remmember
+who pointed-out it.
+
+Revision 1.39  2010/02/18 13:18:05  set
+* Added: [ticepic.c examples/Makefile] Example of how to use something
+different than gdb.
+* Added: [x11_cpp_test.cc cmds.txt] Example of how to specify an starting
+commands file.
+* Added: [connect.c mi_gdb.h] Functionality to indicate a file containing
+commands to be executed at start-up and after connection.
+* Modified: [mi_gdb.h] Version to 0.8.12.
+* Fixed: [target_man.c] Return value for gmi_target_select.
+* Added: [.cvsignore] version executable exclusion.
+* Added: [examples/.cvsignore] ticepic binary exclusion.
+
+Revision 1.38  2007/06/13 12:26:47  set
+* Added: "from" field to the mi_frames structure. Suggested by Val Greene
+(vgreene/SF).
+* Modified: Version to 0.8.11.
+
+Revision 1.37  2007/05/11 14:16:24  set
+* Added: Implementation of the -target-download command, used to download
+a binary to the remote target.
+* Added: An option to MIDebugger::SelectTargetRemote used to load the
+binary to the remote target. Useful for embedded systems, tested with
+avr-gdb.
+
+Revision 1.36  2007/05/10 16:49:11  set
+* Added: AVR architecture.
+* Added: Workaround for bugs in -gdb-show architecture. Seen on gdb 6.4.x.
+
+Revision 1.35  2007/05/03 11:51:09  set
+* Added: pic14 architecture. That's for an in-circuit emulator that I'm
+developing.
+
+Revision 1.34  2007/04/30 16:43:49  set
+* Fixed: When parsing an address from gdb strtol isn't suitable, strtoul
+is better.
+
+Revision 1.33  2005/09/26 18:38:35  set
+* Fixed: Apple seem to have changed the output type for stack frames to be
+a tuple of tuples rather than a list of tuples. Patch from Greg.
+
+Revision 1.32  2005/06/03 13:03:19  set
+* Fixed: Breakpoint parser filled the "type" field instead of the "disp"
+field. Patch by Max Kovalenko (madmax/botik/ru).
+* Modified: Version to 0.8.10.
+
+Revision 1.31  2005/05/13 19:29:54  set
+* Fixed: pty_test.c to also exit when read returns 0 (Linux case). Patch
+from Greg.
+
+Revision 1.30  2005/05/12 20:23:02  set
+* Modified: Regenerated the docs to include the new documentation about
+ptys. Also changed the docs to name version 0.8.9.
+
+Revision 1.29  2005/05/12 20:18:56  set
+* Applied patches from Greg Watson (gwatson/lanl/gov):
+  * Removes apple code from src/get_free_vt.c
+  * Adds a new file src/get_free_pty.c This is a new functionality to
+    communicate with the debuggie using a pseudo terminal.
+  * Adds new mi_pty structure to src/mi_gdb.h
+  * Modifies src/Makefile to build get_free_pty.o
+  * Adds new file examples/pty_test.c
+  * Modifies examples/Makefile to build pty_test
+
+Revision 1.28  2005/04/29 20:11:13  set
+* Applied patches from Greg Watson (gwatson/lanl/gov):
+  * Add pty support for Darwin, including extending the mi_aux_term
+    structure to include a file descriptor for the master side of the pty.
+    This allows the code to prevent a race condition between checking for a
+    free pty and opening it.
+  * Rename mi_get_sttoped() to mi_get_stopped() and expose the interface
+    in mi_gdb.h.
+  * Added new gmi_exec_next_cnt() and gmi_exec_stop_cnt() commands.
+  * Add support for the broken Darwin version of gdb (tuples can contain
+    values as well as results).
+  * Fix the 'signal-name' and 'signal-meaning' variable names (were
+    'signal_name' and 'signal_meaning').
+  * Allow a 'count' argument to be supplied to mi_exec_step() and
+    mi_exec_next().
+
+Revision 1.27  2004/12/06 15:51:04  set
+* Fixed: Compilations problems for SuSE 5.2. Reported by J.B. Lethbridge.
+
+Revision 1.26  2004/10/19 16:21:40  set
+* Fixed: FinishFun member must set the state to running if the command
+succeed.
+
+Revision 1.25  2004/10/18 19:39:17  set
+* Modified: Version to 0.8.7.
+
+Revision 1.24  2004/10/18 19:35:40  set
+* Fixed: Various examples to compile with current code.
+* Fixed: Some missing headers. Needed to compile on BSD systems.
+
+Revision 1.23  2004/10/15 23:50:37  set
+* Added: [Cygwin] Some minimal support. Now when the target is selected we
+tell gdb to use a new window. It seems to work but the new window have some
+serious problems.
+
+Revision 1.22  2004/09/16 23:18:26  set
+* Modified: To compile with Cygwin. It doesn't mean it works, just
+compiles.
+
+Revision 1.21  2004/09/10 19:10:20  set
+* Added: A top level makefile, is just a wrapper for the src/Makefile.
+* Modified: Version to 0.8.6.
+
+Revision 1.20  2004/09/08 18:09:46  set
+* Added: C++ member to find and cache the architecture. Currently supported
+architectures are IA32 (x86) and SPARC. They are the only archs I have at
+hand.
+
+Revision 1.19  2004/09/07 19:56:28  set
+* Fixed: Lack of error report when we failed to create the temporal files
+to spawn an X terminal.
+* Fixed: Now we test if the X terminal and gdb binary are there and report
+proper errors if they are missing.
+
+Revision 1.18  2004/09/06 17:13:11  set
+* Added: Functions to workaround another bug in gdb. I reported it and it
+was named "mi/1770". Affects gdb 6.x.
+
+Revision 1.17  2004/08/25 20:49:52  set
+* Modified: mi_error reset to MI_OK when connecting.
+* Modified: MIDebugger::TargetUnselect() to detach only if remote/pid is
+stopped.
+* Added: execute until address is reached (we had file:line only).
+
+Revision 1.16  2004/08/24 21:10:21  set
+* Modified: PID targets starts stopped.
+* Fixed: When debugging an attached process if gdb dies we failed to go to
+disconnected.
+
+Revision 1.15  2004/08/23 23:45:23  set
+* Added: Mechanism to disable psym workarounds. The mechanism allows to
+enable/disable workarounds in a simple and compatible way.
+* Added: Mechanism to force MI version.
+* Added: Enabled a couple of MI v2 things when the version is forced to 2+.
+* Added: BreakAfter(mi_bkpt *b) C++ wrapper.
+
+Revision 1.14  2004/08/17 20:40:11  set
+* Added: Disassembler functionality.
+
+Revision 1.13  2004/08/13 20:36:08  set
+* Modified: The mechanism to set gdb and xterm binaries. Now you can get
+the actual default (it searches in PATH) and set a new value that's copied.
+* Added: Functions to set the "main" function.
+* Added: Time out callback to catch time-outs in gdb response.
+* Added: Mechanism to detect gdb died and go to disconnected state. We
+already found an operation that makes gdb die.
+
+Revision 1.12  2004/08/12 21:21:43  set
+* Added: Command to get info about the threads. It uses a partially
+implemented gdb functionality.
+
+Revision 1.11  2004/08/09 12:58:23  set
+* Updated: version and reference to release 0.8.3.
+
+Revision 1.10  2004/08/08 23:07:00  set
+* Added: A function to know the endian of the target.
+* Added: A workaround to another bug in gdb: responses like the endian and
+architecture are sent to the console and not to the result record. So now
+the -gdb-show command traps the console (a copy) and if the RR have no info
+and we got something in the console that's returned.
+
+Revision 1.9  2004/08/06 20:59:44  set
+* Fixed: The gdb dialog was amazingly slow. It was just the fact that I
+trusted in the non-blocking flag and sleep, but this annoys the scheduler
+and the solution is to just use select, which is the Right Thing To Do (TM)
+;-)
+* Modified: MIDebugger::EvalExpression now takes a const char * and cleans
+the error number before executing.
+* Added: Some very restricted function to read memory content.
+
+Revision 1.8  2004/08/04 20:07:31  set
+* Modified: The mi_gvar structure to be able to hold a tree of variables.
+* Fixed: mi_error_from_gdb not released at exit.
+* Fixed: leak in Kill()
+* Fixed/Added: Various details of the GNU vars code.
+
+Revision 1.7  2004/08/01 00:16:13  set
+* Added: More fields to the mi_wp structure, useful for the frontend.
+* Fixed: Watchpoint expressions must be enclosed using "" to avoid
+problems.
+* Fixed: wp_mode name to mi_wp_mode.
+* Added: int MIDebugger::WatchDelete(mi_wp *w).
+* Fixed: sr_wp_scope doesn't report a full wp, just the number.
+
+Revision 1.6  2004/07/30 21:17:08  set
+* Added: More workarounds to gdb bugs. I fille the cli/1725, gdb/1726 and
+gdb/1727 bug reports. I hope they get fixed :-(
+
+Revision 1.5  2004/07/28 21:09:40  set
+* Fixed: Some mess in the bkpts structure. The "times" field is how many
+times we hit a breakpoint, just information. The real value is "ignore".
+* Fixed: Missing parse of the "cond" field for breakpoints.
+* Added: A C++ function to set a breakpoint from a mi_bkpt structure. It
+supports the four modes to specify a location.
+
+Revision 1.4  2004/07/25 22:58:07  set
+* Added: More fields to the mi_bkpt structure.
+
+Revision 1.3  2004/07/21 19:43:39  set
+* Added: A workaround to a bug in gdb: the two stages load of symtabs
+(using partial ones) is not reliable (fails to find the symtab in some
+cases). So now we force the load with "readnow".
+* Fixed: Lack of string.h in examples/target_frames.cc. Reported by Thiago.
+
+Revision 1.2  2004/07/20 23:42:56  set
+* Fixed: directory in compressed sources.
+
+Revision 1.1  2004/07/20 20:38:42  set
+* Added: C++ wrapper to attach to a running process. Also modified the low
+level function to return the current frame.
+* Modified: Now if we get an error while the state is running we assume the
+previous "running" was wrong and we are in fact stopped. Until now I saw
+two cases where gdb says we are running and then shows an error.
+
