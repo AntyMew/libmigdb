@@ -1616,6 +1616,64 @@ int mi_get_read_memory(mi_h *h, unsigned char *dest, unsigned ws, int *na,
  return ok==2;
 }
 
+int mi_get_read_memory_bytes(mi_h *h, unsigned char *dest, unsigned c,
+                  unsigned long *addr)
+{
+ mi_results *res=mi_res_done_var(h,"memory"), *r;
+ int ok=0;
+
+ unsigned long begin=0;
+ unsigned long offset=0;
+ unsigned long end=0;
+
+ r=res;
+ if (r && r->type==t_list)
+   {
+    r=r->v.rs;
+    if (r->type!=t_tuple)
+      {
+       mi_free_results(res);
+       return 0;
+      }
+    r=r->v.rs;
+
+    while (r)
+      {
+       if (r->type==t_const && strcmp(r->var,"begin")==0)
+         {
+          begin=strtoul(r->v.cstr,0,0);
+          if (addr)
+             *addr=begin;
+          ok++;
+         }
+       else if (r->type==t_const && strcmp(r->var,"offset")==0)
+         {
+          offset=strtoul(r->v.cstr,0,0);
+          if (addr)
+            *addr+=offset;
+         }
+       else if (r->type==t_const && strcmp(r->var,"end")==0)
+         {
+          end=strtoul(r->v.cstr,0,0);
+          ok++;
+         }
+       else if (r->type==t_const && strcmp(r->var,"contents")==0)
+         {
+          char pos[5];
+          for (int i=offset; i<end-begin; i++)
+             {
+              sprintf(pos, "0x%c%c", r->v.cstr[i*2], r->v.cstr[i*2+1]);
+              *(dest++)=strtol(pos,0,0);
+             }
+          ok++;
+         }
+       r=r->next;
+      }
+   }
+ mi_free_results(res);
+ return ok==3;
+}
+
 mi_asm_insn *mi_parse_insn(mi_results *c)
 {
  mi_asm_insn *res=NULL, *cur=NULL;

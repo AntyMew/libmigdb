@@ -30,6 +30,7 @@ gdb command:                       Implemented?
 -data-list-register-names          Yes
 -data-list-register-values         No
 -data-read-memory                  No
+-data-read-memory-bytes            Yes
 -display-delete                    N.A. (delete display)
 -display-disable                   N.A. (disable display)
 -display-enable                    N.A. (enable display)
@@ -119,6 +120,15 @@ void mi_data_read_memory_hx(mi_h *h, const char *exp, unsigned ws,
     mi_send(h,"-data-read-memory \"%s\" x %d 1 %d\n",exp,ws,c);
 }
 
+void mi_data_read_memory_bytes(mi_h *h, const char *exp, unsigned c,
+                               int convAddr)
+{
+ if (convAddr)
+    mi_send(h,"-data-read-memory-bytes \"&%s\" %d\n",exp,c);
+ else
+    mi_send(h,"-data-read-memory-bytes \"%s\" %d\n",exp,c);
+}
+
 void mi_data_disassemble_se(mi_h *h, const char *start, const char *end,
                             int mode)
 {
@@ -205,6 +215,13 @@ int gmi_read_memory(mi_h *h, const char *exp, unsigned size,
 {
  mi_data_read_memory_hx(h,exp,1,size,convAddr);
  return mi_get_read_memory(h,dest,1,na,addr);
+}
+
+int gmi_read_memory_bytes(mi_h *h, const char *exp, unsigned size,
+                          unsigned char *dest, int convAddr, unsigned long *addr)
+{
+ mi_data_read_memory_bytes(h,exp,size,convAddr);
+ return mi_get_read_memory_bytes(h,dest,size,addr);
 }
 
 mi_asm_insns *gmi_data_disassemble_se(mi_h *h, const char *start,

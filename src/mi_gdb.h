@@ -513,6 +513,8 @@ enum mi_stop_reason mi_reason_str_to_enum(const char *s);
 const char *mi_reason_enum_to_str(enum mi_stop_reason r);
 int mi_get_read_memory(mi_h *h, unsigned char *dest, unsigned ws, int *na,
                        unsigned long *addr);
+int mi_get_read_memory_bytes(mi_h *h, unsigned char *dest, unsigned c,
+                             unsigned long *addr);
 mi_asm_insns *mi_get_asm_insns(mi_h *h);
 /* Starting point of the program. */
 void mi_set_main_func(const char *name);
@@ -640,6 +642,9 @@ int gmi_dir(mi_h *h, const char *path);
 int gmi_read_memory(mi_h *h, const char *exp, unsigned size,
                     unsigned char *dest, int *na, int convAddr,
                     unsigned long *addr);
+int gmi_read_memory_bytes(mi_h *h, const char *exp, unsigned size,
+                          unsigned char *dest, int convAddr,
+                          unsigned long *addr);
 mi_asm_insns *gmi_data_disassemble_se(mi_h *h, const char *start,
                                       const char *end, int mode);
 mi_asm_insns *gmi_data_disassemble_fl(mi_h *h, const char *file, int line,
