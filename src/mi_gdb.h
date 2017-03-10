@@ -22,6 +22,9 @@
   
 ***************************************************************************/
 
+#ifndef MI_GDB_H
+#define MI_GDB_H
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -988,4 +991,4 @@ protected:
 };
 
 #endif
-
+#endif

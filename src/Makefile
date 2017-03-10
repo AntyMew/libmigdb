@@ -1,5 +1,5 @@
 #!/usr/bin/make
-PREFIX=/usr
+PREFIX=/usr/local
 
 all: libmigdb.a
 
