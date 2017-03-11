@@ -643,11 +643,9 @@ char *gmi_data_evaluate_expression(mi_h *h, const char *expression);
 int gmi_dir(mi_h *h, const char *path);
 /* A very limited "data read memory" implementation. */
 int gmi_read_memory(mi_h *h, const char *exp, unsigned size,
-                    void *dest, int *na, int convAddr,
-                    unsigned long *addr);
+                    void *dest, int *na, unsigned long *addr);
 int gmi_read_memory_bytes(mi_h *h, const char *exp, unsigned size,
-                          void *dest, int convAddr,
-                          unsigned long *addr);
+                          void *dest, unsigned long *addr);
 mi_asm_insns *gmi_data_disassemble_se(mi_h *h, const char *start,
                                       const char *end, int mode);
 mi_asm_insns *gmi_data_disassemble_fl(mi_h *h, const char *file, int line,
@@ -859,11 +857,11 @@ public:
   return gmi_dir(h,path);
  }
  int ReadMemory(const char *exp, unsigned size, void *dest,
-                int &na, int convAddr, unsigned long *addr)
+                int &na, unsigned long *addr)
  {
   if (state!=stopped)
      return 0;
-  return gmi_read_memory(h,exp,size,dest,&na,convAddr,addr);
+  return gmi_read_memory(h,exp,size,dest,&na,addr);
  }
  char *Show(const char *var);
  int ThreadListIDs(int *&list)
