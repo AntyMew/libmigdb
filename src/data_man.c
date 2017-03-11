@@ -210,15 +210,14 @@ int gmi_dir(mi_h *h, const char *path)
 }
 
 int gmi_read_memory(mi_h *h, const char *exp, unsigned size,
-                    unsigned char *dest, int *na, int convAddr,
-                    unsigned long *addr)
+                    void *dest, int *na, int convAddr, unsigned long *addr)
 {
  mi_data_read_memory_hx(h,exp,1,size,convAddr);
  return mi_get_read_memory(h,dest,1,na,addr);
 }
 
 int gmi_read_memory_bytes(mi_h *h, const char *exp, unsigned size,
-                          unsigned char *dest, int convAddr, unsigned long *addr)
+                          void *dest, int convAddr, unsigned long *addr)
 {
  mi_data_read_memory_bytes(h,exp,size,convAddr);
  return mi_get_read_memory_bytes(h,dest,size,addr);

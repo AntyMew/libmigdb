@@ -1567,7 +1567,7 @@ mi_stop *mi_res_stop(mi_h *h)
  return stop;
 }
 
-int mi_get_read_memory(mi_h *h, unsigned char *dest, unsigned ws, int *na,
+int mi_get_read_memory(mi_h *h, void *dest, unsigned ws, int *na,
                        unsigned long *addr)
 {
  char *end;
@@ -1595,12 +1595,18 @@ int mi_get_read_memory(mi_h *h, unsigned char *dest, unsigned ws, int *na,
               strcmp(data->v.cstr,"N/A")==0)
              *na=1;
           else
+            {
+             char buf[ws];
+             int pos=0;
+
              while (data)
                {
                 if (data->type==t_const)
-                   *(dest++)=strtol(data->v.cstr,&end,0);
+                   buf[pos++]=strtol(data->v.cstr,&end,0);
                 data=data->next;
                }
+             memcpy(dest,buf,ws);
+            }
          }
        else if (r->type==t_const && strcmp(r->var,"addr")==0)
          {
@@ -1616,7 +1622,7 @@ int mi_get_read_memory(mi_h *h, unsigned char *dest, unsigned ws, int *na,
  return ok==2;
 }
 
-int mi_get_read_memory_bytes(mi_h *h, unsigned char *dest, unsigned c,
+int mi_get_read_memory_bytes(mi_h *h, void *dest, unsigned c,
                   unsigned long *addr)
 {
  mi_results *res=mi_res_done_var(h,"memory"), *r;
@@ -1659,11 +1665,15 @@ int mi_get_read_memory_bytes(mi_h *h, unsigned char *dest, unsigned c,
          }
        else if (r->type==t_const && strcmp(r->var,"contents")==0)
          {
-          char pos[5];
-          for (int i=offset; i<end-begin; i++)
+          int length=end-begin;
+          char *buf=(char*)dest;
+          char str[5]={'0','x',0,0,0};
+          
+          for (int i=0; i<length; i++)
              {
-              sprintf(pos, "0x%c%c", r->v.cstr[i*2], r->v.cstr[i*2+1]);
-              *(dest++)=strtol(pos,0,0);
+              str[2]=r->v.cstr[i*2];
+              str[3]=r->v.cstr[i*2+1];
+              buf[i]=strtol(str,0,0);
              }
           ok++;
          }
