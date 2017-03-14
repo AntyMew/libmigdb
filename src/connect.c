@@ -46,7 +46,6 @@ in a row.
 #include <sys/stat.h>
 #include <sys/time.h>
 #include "mi_gdb.h"
-#include "mi_gdb.h"
 
 #ifndef TEMP_FAILURE_RETRY
  #define TEMP_FAILURE_RETRY(a) (a)
