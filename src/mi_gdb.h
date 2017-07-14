@@ -646,6 +646,7 @@ int gmi_read_memory(mi_h *h, const char *exp, unsigned size,
                     void *dest, int *na, unsigned long *addr);
 int gmi_read_memory_bytes(mi_h *h, const char *exp, unsigned size,
                           void *dest, unsigned long *addr);
+int gmi_write_memory_bytes(mi_h *h, const char *exp, const char *val);
 mi_asm_insns *gmi_data_disassemble_se(mi_h *h, const char *start,
                                       const char *end, int mode);
 mi_asm_insns *gmi_data_disassemble_fl(mi_h *h, const char *file, int line,

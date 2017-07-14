@@ -2,17 +2,17 @@
 
   GDB/MI interface library
   Copyright (c) 2004 by Salvador E. Tropea.
- 
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
- 
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
- 
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,6 +31,7 @@ gdb command:                       Implemented?
 -data-list-register-values         No
 -data-read-memory                  No
 -data-read-memory-bytes            Yes
+-data-write-memory-bytes           Yes
 -display-delete                    N.A. (delete display)
 -display-disable                   N.A. (disable display)
 -display-enable                    N.A. (enable display)
@@ -122,6 +123,11 @@ void mi_data_read_memory_bytes(mi_h *h, const char *exp, unsigned c)
     mi_send(h,"-data-read-memory-bytes \"%s\" %d\n",exp,c);
 }
 
+void mi_data_write_memory_bytes(mi_h *h, const char *exp, const char *val)
+{
+    mi_send(h,"-data-write-memory-bytes \"%s\" \"%s\"\n",exp,val);
+}
+
 void mi_data_disassemble_se(mi_h *h, const char *start, const char *end,
                             int mode)
 {
@@ -176,7 +182,7 @@ void mi_data_list_register_values(mi_h *h, enum mi_gvar_fmt fmt, mi_chg_reg *l)
 
   Command: -data-evaluate-expression
   Return: The resulting value (as plain text) or NULL on error.
-  
+
 ***************************************************************************/
 
 char *gmi_data_evaluate_expression(mi_h *h, const char *expression)
@@ -193,7 +199,7 @@ the program to debug. Only the MI v1 implementation is available.
 
   Command: -environment-directory
   Return: !=0 OK
-  
+
 ***************************************************************************/
 
 int gmi_dir(mi_h *h, const char *path)
@@ -214,6 +220,12 @@ int gmi_read_memory_bytes(mi_h *h, const char *exp, unsigned size,
 {
  mi_data_read_memory_bytes(h,exp,size);
  return mi_get_read_memory_bytes(h,dest,size,addr);
+}
+
+int gmi_write_memory_bytes(mi_h *h, const char *exp, const char *val)
+{
+ mi_data_write_memory_bytes(h,exp,val);
+ return mi_res_simple_done(h);
 }
 
 mi_asm_insns *gmi_data_disassemble_se(mi_h *h, const char *start,
@@ -261,4 +273,3 @@ mi_chg_reg *gmi_data_list_all_register_values(mi_h *h, enum mi_gvar_fmt fmt, int
  mi_data_list_register_values(h,fmt,NULL);
  return mi_get_reg_values_l(h,how_many);
 }
-
